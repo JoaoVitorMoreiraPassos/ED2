@@ -30,36 +30,12 @@ int ehFolha(struct Arv23 *R)
     return (R->cen == NULL && R->esq == NULL && R->dir == NULL);
 }
 
-// void preencheArq(){
-//     Arv23 * NO;
-//     FILE *arq = fopen("bt.txt", "a");
-//     printf("cod: ");
-//     scanf("%s",NO->cod);
-
-//     printf("tipo: ");
-//     scanf("%s",NO->tipo);
-
-//     printf("marca: ");
-//     scanf("%s",NO->marca);
-
-//     printf("tamanho: ");
-//     scanf("%d",NO->tamanho);
-
-//     printf("quantidade: ");
-//     scanf("%d",NO->quantidade);
-
-//     printf("preco: ");
-//     scanf("%f",NO->preco);
-
-//     fprintf(arq,"%s %s %s %d %d %f\n", NO->cod, NO->tipo, NO->marca, NO->tamanho, NO->quantidade, NO->preco);
-// }
 struct Arv23 *criaNo(char *cod, char *tipo,char *marca, int tamanho, int quantidade, float preco,int pos, struct Arv23 *FEsq,struct Arv23 *FCen,struct Arv23 *FDir)
 {
 	struct Arv23 *No;
 	
 	No = (struct Arv23 *) malloc(sizeof(struct Arv23));
 	
-	// (*No).Info1 = valor;
     strcpy((*No).cod, cod);
     strcpy((*No).tipo, tipo);
     strcpy((*No).marca, marca);
@@ -68,7 +44,6 @@ struct Arv23 *criaNo(char *cod, char *tipo,char *marca, int tamanho, int quantid
     (*No).preco = preco;
     (*No).pos = pos;
 
-	// (*No).Info2 = 0;
     strcpy((*No).cod2, "000000");
 	(*No).NInfos = 1;
 	(*No).esq = FEsq;
@@ -81,7 +56,6 @@ void adiciona(struct Arv23 **Raiz, char *cod, char *tipo,char *marca, int tamanh
 {
     if(strcmp(cod, (*Raiz)->cod) > 0)
 	{ 
-        // (*Raiz)->Info2 = Valor;
         strcpy((*Raiz)->cod2 ,cod);
         strcpy((*Raiz)->tipo2,tipo);
         strcpy((*Raiz)->marca2,marca);
@@ -92,7 +66,6 @@ void adiciona(struct Arv23 **Raiz, char *cod, char *tipo,char *marca, int tamanh
         (*Raiz)->dir = MaiorNo;
 	}	
 	else {
-		// (*Raiz)->Info2 = (*Raiz)->Info1;
         strcpy((*Raiz)->cod2 ,(*Raiz)->cod);
         strcpy((*Raiz)->tipo2,(*Raiz)->tipo);
         strcpy((*Raiz)->marca2,(*Raiz)->marca);
@@ -101,7 +74,6 @@ void adiciona(struct Arv23 **Raiz, char *cod, char *tipo,char *marca, int tamanh
         (*Raiz)->preco2 = (*Raiz)->preco;
         (*Raiz)->pos2 = (*Raiz)->pos;
 
-		// (*Raiz)->Info1 = Valor;
         strcpy((*Raiz)->cod ,cod);
         strcpy((*Raiz)->tipo,tipo);
         strcpy((*Raiz)->marca,marca);
@@ -142,10 +114,8 @@ struct Arv23 *quebraNo(struct Arv23 **Raiz,char cod[], char tipo[], char marca[]
         (*Raiz)->cen = MaiorNo;
         
     }
-    // else if (valor < (*Raiz)->Info2) 	
     else if(strcmp(cod, (*Raiz)->cod2) < 0)
     {
-        // *sobe = valor;
         strcpy(sobecod, cod);
         strcpy(sobetipo, tipo);
         strcpy(sobemarca, marca);
@@ -156,7 +126,6 @@ struct Arv23 *quebraNo(struct Arv23 **Raiz,char cod[], char tipo[], char marca[]
         Novo = criaNo((*Raiz)->cod2, (*Raiz)->tipo2, (*Raiz)->marca2, (*Raiz)->tamanho2, (*Raiz)->quantidade2, (*Raiz)->preco2,(*Raiz)->pos2,MaiorNo,(*Raiz)->dir,NULL);
     }
     else{
-        // *sobe = (*Raiz)->Info2;
         strcpy(sobecod, (*Raiz)->cod2);
         strcpy(sobetipo, (*Raiz)->tipo2);
         strcpy(sobemarca, (*Raiz)->marca2);
@@ -266,7 +235,8 @@ Arv23 * criaArv23(){
 }
 
 Arv23 **buscaCalcado(Arv23 *tree, char *codigo){
-    Arv23 **NO = NULL;
+    Arv23 **NO;
+    NO = NULL;
     if(tree != NULL){
         if(strcmp(codigo, tree->cod) == 0){
             NO = &tree;
@@ -297,6 +267,7 @@ void insereCalcado(Arv23 *tree, char *codigo, int quantidade){
             (*aux)->quantidade2 += quantidade;
             printf("Nova quantidade: %d\n", (*aux)->quantidade2);
         }
+        gravaArv23(tree);
     }
     else
         printf("Produto não registrado!\n");
@@ -313,10 +284,33 @@ void vendeCalcado(Arv23 *tree, char *codigo, int quantidade){
             (*aux)->quantidade2 -= quantidade;
             printf("Nova quantidade: %d\n", (*aux)->quantidade2);
         }
+        gravaArv23(tree);
     }
     else
         printf("Produto não registrado!\n");
 }
+
+void grava(Arv23 *tree, FILE *arq){
+    // FILE *arq = fopen("calcados.txt", "a");
+    if(tree != NULL){
+        grava(tree->esq, arq);
+        fprintf(arq, "%s %s %s %d %d %.2f\n",tree->cod, tree->tipo, tree->marca, tree->tamanho, tree->quantidade, tree->preco);
+        grava(tree->cen, arq);
+        if(tree->NInfos == 2){
+            fprintf(arq, "%s %s %s %d %d %.2f\n",tree->cod2, tree->tipo2, tree->marca2, tree->tamanho2, tree->quantidade2, tree->preco2);
+        }
+        grava(tree->dir, arq);
+    }
+}
+
+int gravaArv23(Arv23 *tree){
+    FILE *arq = fopen("bd.txt", "w");
+    fclose(arq);
+    arq = fopen("bd.txt", "a");
+    grava(tree, arq);
+    fclose(arq);
+}
+
 void mostra(Arv23 *tree){
     if(tree != NULL){
         mostra(tree->esq);
@@ -345,7 +339,7 @@ int main(){
     int escolha = 1;
     do{
         printf("BEM-VINDO A SUA LOJA DE CALCADOS\n");
-        printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ");
+        printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
         scanf("%d", &escolha);
         char codigo[7];
         int quantidade;
@@ -354,29 +348,44 @@ int main(){
             case 1:
                 printf("digite o codigo do produto: ");
                 scanf("%s", codigo);
-                quantidade;
                 printf("Quantidade: ");
                 scanf("%d", &quantidade);
+                system("clear");
                 insereCalcado(tree, codigo, quantidade);
                 break;
             case 2:
                 printf("digite o codigo do produto: ");
                 scanf("%s", codigo);
-                quantidade;
                 printf("Quantidade: ");
                 scanf("%d", &quantidade);
-                insereCalcado(tree, codigo, quantidade);
+                system("clear");
                 vendeCalcado(tree, codigo, quantidade);
                 break;
             case 3:
                 printf("digite o codigo do produto: ");
-                scanf("%s", codigo);
-                Arv23 *NO = buscaCalcado(tree, codigo);
-                if(NO == NULL)
+                scanf(" %s", codigo);
+                system("clear");
+                printf("%10s | %10s | %10s | %10s | %8s | %5s\n","Codigo", "Tipo", "Marca", "Tamanho", "Quantidade", "Preço");
+                Arv23 **NO = buscaCalcado(tree, codigo);
+                if(NO != NULL){
+                    if(strcmp((*NO)->cod, codigo) == 0){
+                        printf("--------------------------------------------------------------------------\n");
+                        printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", (*NO)->cod, (*NO)->tipo, (*NO)->marca, (*NO)->tamanho, (*NO)->quantidade, (*NO)->preco);
+                    }
+                    else{
+                        printf("--------------------------------------------------------------------------\n");
+                        printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", (*NO)->cod2, (*NO)->tipo2, (*NO)->marca2, (*NO)->tamanho2, (*NO)->quantidade2, (*NO)->preco2);
+                    }
+                }
+                else{
+                    system("clear");
+                    printf("--------------------------------------------------------------------------\n");
                     printf("Calcado não registrado!\n");
-                else
-                    printf("%s %s %s %d %d %f\n", tree->cod, tree->tipo, tree->marca, tree->tamanho, tree->quantidade, tree->preco);
+                    printf("--------------------------------------------------------------------------\n");
+                }
+                break;
             case 4:
+                system("clear");
                 tabela(tree);
                 break;
             default:
