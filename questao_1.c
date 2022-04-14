@@ -142,7 +142,8 @@ struct Arv23 *quebraNo(struct Arv23 **Raiz,char cod[], char tipo[], char marca[]
     return(Novo);	
 }
 struct Arv23 *inserirArv23(struct Arv23 *Pai, struct Arv23 **Raiz, char *cod, char *tipo, char *marca, int tamanho, int quantidade, float preco,int pos, char *sobecod, char *sobetipo, char *sobemarca, int *sobetamanho, int *sobequantidade, float *sobepreco, int *sobepos)
-{ struct Arv23 *maiorNo;
+{ 
+    struct Arv23 *maiorNo;
 	maiorNo = NULL;
 	if(*Raiz == NULL)
 		*Raiz = criaNo(cod,tipo, marca, tamanho, quantidade, preco, pos,NULL,NULL,NULL);	
