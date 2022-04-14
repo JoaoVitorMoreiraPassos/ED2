@@ -217,7 +217,6 @@ Arv23 * criaArv23(){
     Arv23 *tree = NULL, *pai = NULL;
     if(arq == NULL)
         printf("nao abriu\n");
-    //     preencheArq();
     int tamanho, quantidade;
     float preco;
     char cod[7], tipo[20],marca[20];
@@ -234,64 +233,7 @@ Arv23 * criaArv23(){
     return tree;
 }
 
-Arv23 **buscaCalcado(Arv23 *tree, char *codigo){
-    Arv23 **NO;
-    NO = NULL;
-    if(tree != NULL){
-        if(strcmp(codigo, tree->cod) == 0){
-            NO = &tree;
-        }
-        else{ 
-            if( strcmp(codigo, tree->cod) < 0)
-                NO = buscaCalcado(tree->esq, codigo);
-            else if(strcmp(codigo, tree->cod) > 0 && tree->NInfos == 1)
-                NO = buscaCalcado(tree->cen, codigo);
-            else if(tree->NInfos == 2 && strcmp(tree->cod2, codigo) < 0)
-                NO = buscaCalcado(tree->dir, codigo);
-            else if(tree->NInfos == 2 && (strcmp(tree->cod, codigo) < 0 && strcmp(tree->cod2, codigo) > 0))
-                NO = buscaCalcado(tree->cen, codigo);
-        }
-    }
-    return NO;
-}
-
-void insereCalcado(Arv23 *tree, char *codigo, int quantidade){
-    Arv23 **aux;
-    aux = buscaCalcado(tree, codigo);
-    if(aux != NULL){
-        if(strcmp((*aux)->cod, codigo) == 0){
-            (*aux)->quantidade += quantidade;
-            printf("Nova quantidade: %d\n", (*aux)->quantidade);
-        }
-        else{
-            (*aux)->quantidade2 += quantidade;
-            printf("Nova quantidade: %d\n", (*aux)->quantidade2);
-        }
-        gravaArv23(tree);
-    }
-    else
-        printf("Produto não registrado!\n");
-}
-void vendeCalcado(Arv23 *tree, char *codigo, int quantidade){
-    Arv23 **aux;
-    aux = buscaCalcado(tree, codigo);
-    if(aux != NULL){
-        if(strcmp((*aux)->cod, codigo) == 0){
-            (*aux)->quantidade -= quantidade;
-            printf("Nova quantidade: %d\n", (*aux)->quantidade);
-        }
-        else{
-            (*aux)->quantidade2 -= quantidade;
-            printf("Nova quantidade: %d\n", (*aux)->quantidade2);
-        }
-        gravaArv23(tree);
-    }
-    else
-        printf("Produto não registrado!\n");
-}
-
 void grava(Arv23 *tree, FILE *arq){
-    // FILE *arq = fopen("calcados.txt", "a");
     if(tree != NULL){
         grava(tree->esq, arq);
         fprintf(arq, "%s %s %s %d %d %.2f\n",tree->cod, tree->tipo, tree->marca, tree->tamanho, tree->quantidade, tree->preco);
@@ -303,13 +245,72 @@ void grava(Arv23 *tree, FILE *arq){
     }
 }
 
-int gravaArv23(Arv23 *tree){
+void gravaArv23(Arv23 *tree){
     FILE *arq = fopen("bd.txt", "w");
     fclose(arq);
     arq = fopen("bd.txt", "a");
     grava(tree, arq);
     fclose(arq);
 }
+
+Arv23 **buscaCalcado(Arv23 **tree, char *codigo){
+    Arv23 **NO;
+    NO = NULL;
+    if(*tree != NULL){
+        if(strcmp(codigo, (*tree)->cod) == 0){
+            NO = tree;
+        }
+        else{ 
+            if( strcmp(codigo, (*tree)->cod) < 0)
+                NO = buscaCalcado(&(*tree)->esq, codigo);
+            else if(strcmp(codigo, (*tree)->cod) > 0 && (*tree)->NInfos == 1)
+                NO = buscaCalcado(&(*tree)->cen, codigo);
+            else if((*tree)->NInfos == 2 && strcmp((*tree)->cod2, codigo) < 0)
+                NO = buscaCalcado(&(*tree)->dir, codigo);
+            else if((*tree)->NInfos == 2 && (strcmp((*tree)->cod, codigo) < 0 && strcmp((*tree)->cod2, codigo) > 0))
+                NO = buscaCalcado(&(*tree)->cen, codigo);
+        }
+    }
+    return NO;
+}
+
+void insereCalcado(Arv23 **tree, char *codigo, int quantidade){
+    Arv23 **aux;
+    aux = buscaCalcado(tree, codigo);
+    if(aux != NULL){
+        if(strcmp((*aux)->cod, codigo) == 0){
+            (*aux)->quantidade += quantidade;
+            printf("Nova quantidade: %d\n", (*aux)->quantidade);
+        }
+        else{
+            (*aux)->quantidade2 += quantidade;
+            printf("Nova quantidade: %d\n", (*aux)->quantidade2);
+        }
+        gravaArv23(*tree);
+    }
+    else
+        printf("Produto não registrado!\n");
+}
+void vendeCalcado(Arv23 **tree, char *codigo, int quantidade){
+    Arv23 **aux;
+    aux = buscaCalcado(tree, codigo);
+    if(aux != NULL){
+        if(strcmp((*aux)->cod, codigo) == 0){
+            (*aux)->quantidade -= quantidade;
+            if((*aux)->quantidade < 0) (*aux)->quantidade  = 0;
+            printf("Nova quantidade: %d\n", (*aux)->quantidade);
+        }
+        else{
+            (*aux)->quantidade2 -= quantidade;
+            if((*aux)->quantidade2 < 0) (*aux)->quantidade2  = 0;
+            printf("Nova quantidade: %d\n", (*aux)->quantidade2);
+        }
+        gravaArv23(*tree);
+    }
+    else
+        printf("Produto não registrado!\n");
+}
+
 
 void mostra(Arv23 *tree){
     if(tree != NULL){
@@ -350,24 +351,21 @@ int main(){
                 scanf("%s", codigo);
                 printf("Quantidade: ");
                 scanf("%d", &quantidade);
-                system("clear");
-                insereCalcado(tree, codigo, quantidade);
+                insereCalcado(&tree, codigo, quantidade);
                 break;
             case 2:
                 printf("digite o codigo do produto: ");
                 scanf("%s", codigo);
                 printf("Quantidade: ");
                 scanf("%d", &quantidade);
-                system("clear");
-                vendeCalcado(tree, codigo, quantidade);
+                vendeCalcado(&tree, codigo, quantidade);
                 break;
             case 3:
                 printf("digite o codigo do produto: ");
                 scanf(" %s", codigo);
-                system("clear");
-                printf("%10s | %10s | %10s | %10s | %8s | %5s\n","Codigo", "Tipo", "Marca", "Tamanho", "Quantidade", "Preço");
-                Arv23 **NO = buscaCalcado(tree, codigo);
+                Arv23 **NO = buscaCalcado(&tree, codigo);
                 if(NO != NULL){
+                    printf("%10s | %10s | %10s | %10s | %8s | %5s\n","Codigo", "Tipo", "Marca", "Tamanho", "Quantidade", "Preço");
                     if(strcmp((*NO)->cod, codigo) == 0){
                         printf("--------------------------------------------------------------------------\n");
                         printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", (*NO)->cod, (*NO)->tipo, (*NO)->marca, (*NO)->tamanho, (*NO)->quantidade, (*NO)->preco);
@@ -376,16 +374,15 @@ int main(){
                         printf("--------------------------------------------------------------------------\n");
                         printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", (*NO)->cod2, (*NO)->tipo2, (*NO)->marca2, (*NO)->tamanho2, (*NO)->quantidade2, (*NO)->preco2);
                     }
+                    printf("--------------------------------------------------------------------------\n");
                 }
                 else{
-                    system("clear");
                     printf("--------------------------------------------------------------------------\n");
                     printf("Calcado não registrado!\n");
                     printf("--------------------------------------------------------------------------\n");
                 }
                 break;
             case 4:
-                system("clear");
                 tabela(tree);
                 break;
             default:
