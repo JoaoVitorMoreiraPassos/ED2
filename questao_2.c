@@ -195,7 +195,13 @@ void vendeCalcado(ArvLLRB **tree, char *codigo, int quantidade){
 void mostra(ArvLLRB *tree){
     if(tree != NULL){
         mostra(tree->esq);
-        printf("%5d | %10s | %10s | %10s | %10d | %10d | R$%5.2f\n",tree->pos, tree->cod, tree->tipo, tree->marca, tree->tamanho, tree->quantidade, tree->preco);
+        printf("%5d | %10s | %10s | %10s | %10d | %10d | R$%5.2f\n", tree->pos,
+                                                                     tree->cod,
+                                                                     tree->tipo,
+                                                                     tree->marca,
+                                                                     tree->tamanho,
+                                                                     tree->quantidade,
+                                                                     tree->preco);
         printf("-----------------------------------------------------------------------------------\n");
         mostra(tree->dir);
     }
@@ -203,7 +209,13 @@ void mostra(ArvLLRB *tree){
 void tabela(ArvLLRB *tree){
     if(tree != NULL){
         printf("-----------------------------------------------------------------------------------\n");
-        printf("%4s | %10s | %10s | %10s | %10s | %8s | %5s\n","Linha","Codigo", "Tipo", "Marca", "Tamanho", "Quantidade", "Preço");
+        printf("%4s | %10s | %10s | %10s | %10s | %8s | %5s\n", "Linha",
+                                                                "Codigo",
+                                                                "Tipo",
+                                                                "Marca",
+                                                                "Tamanho",
+                                                                "Quantidade",
+                                                                "Preço");
         printf("-----------------------------------------------------------------------------------\n");
         mostra(tree);
         printf("\n");
@@ -212,7 +224,7 @@ void tabela(ArvLLRB *tree){
 int main(){
     ArvLLRB *tree = criaArvLLRB();
     
-    // Testes
+    //-----------------------------  TESTES  ---------------------------------//
     clock_t tempoI, tempoF;
     double tf;
     char *nums[] = {'0', '1','2','3','4','5'};
@@ -235,54 +247,65 @@ int main(){
     tempoF = clock();
     tf = ((tempoF) - (tempoI)) * 1000 / CLOCKS_PER_SEC;
     printf("time: %.2lf ms\n", tf);
-
-    //Usuario
-    // int escolha = 1;
-    // do{
-    //     printf("BEM-VINDO A SUA LOJA DE CALCADOS\n");
-    //     printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
-    //     scanf("%d", &escolha);
-    //     char codigo[7];
-    //     int quantidade;
-    //     switch (escolha)
-    //     {
-    //         case 1:
-    //             printf("digite o codigo do produto: ");
-    //             scanf(" %s", codigo);
-    //             printf("Quantidade: ");
-    //             scanf("%d", &quantidade);
-    //             insereCalcado(&tree, codigo, quantidade);
-    //             break;
-    //         case 2:
-    //             printf("digite o codigo do produto: ");
-    //             scanf(" %s", codigo);
-    //             printf("Quantidade: ");
-    //             scanf("%d", &quantidade);
-    //             vendeCalcado(&tree, codigo, quantidade);
-    //             break;
-    //         case 3:
-    //             printf("digite o codigo do produto: ");
-    //             scanf(" %s", codigo);
-    //             ArvLLRB **NO = buscaCalcado(&tree, codigo);
-    //             if(NO != NULL){
-    //                 printf("%10s | %10s | %10s | %10s | %8s | %5s\n","Codigo", "Tipo", "Marca", "Tamanho", "Quantidade", "Preço");
-    //                 printf("--------------------------------------------------------------------------\n");
-    //                 printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", (*NO)->cod, (*NO)->tipo, (*NO)->marca, (*NO)->tamanho, (*NO)->quantidade, (*NO)->preco);
-    //                 printf("--------------------------------------------------------------------------\n");
-    //             }
-    //             else{
-    //                 printf("--------------------------------------------------------------------------\n");
-    //                 printf("Calcado não registrado!\n");
-    //                 printf("--------------------------------------------------------------------------\n");
-    //             }
-    //             break;
-    //         case 4:
-    //             tabela(tree);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }while(escolha != 5);
-
+    //-----------------------------------------------------------------------//
+    
+    //-------------------------------------------  Usuario -------------------------------------------//
+    int escolha = 1;
+    do{
+        printf("BEM-VINDO A SUA LOJA DE CALCADOS\n");
+        printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
+        scanf("%d", &escolha);
+        char codigo[7];
+        int quantidade;
+        switch (escolha)
+        {
+            case 1:
+                printf("digite o codigo do produto: ");
+                scanf(" %s", codigo);
+                printf("Quantidade: ");
+                scanf("%d", &quantidade);
+                insereCalcado(&tree, codigo, quantidade);
+                break;
+            case 2:
+                printf("digite o codigo do produto: ");
+                scanf(" %s", codigo);
+                printf("Quantidade: ");
+                scanf("%d", &quantidade);
+                vendeCalcado(&tree, codigo, quantidade);
+                break;
+            case 3:
+                printf("digite o codigo do produto: ");
+                scanf(" %s", codigo);
+                ArvLLRB **NO = buscaCalcado(&tree, codigo);
+                if(NO != NULL){
+                    printf("%10s | %10s | %10s | %10s | %8s | %5s\n", "Codigo",
+                                                                      "Tipo",
+                                                                      "Marca",
+                                                                      "Tamanho",
+                                                                      "Quantidade",
+                                                                      "Preço");
+                    printf("--------------------------------------------------------------------------\n");
+                    printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n",(*NO)->cod,
+                                                                          (*NO)->tipo,
+                                                                          (*NO)->marca,
+                                                                          (*NO)->tamanho,
+                                                                          (*NO)->quantidade,
+                                                                          (*NO)->preco);
+                    printf("--------------------------------------------------------------------------\n");
+                }
+                else{
+                    printf("--------------------------------------------------------------------------\n");
+                    printf("Calcado não registrado!\n");
+                    printf("--------------------------------------------------------------------------\n");
+                }
+                break;
+            case 4:
+                tabela(tree);
+                break;
+            default:
+                break;
+        }
+    }while(escolha != 5);
+     //--------------------------------------------------------------------------------------//
     return 0;
 }
