@@ -227,18 +227,18 @@ int main(){
     //-----------------------------  TESTES  ---------------------------------//
     clock_t tempoI, tempoF;
     double tf;
-    char *nums[] = {'0', '1','2','3','4','5'};
+    char *nums[] = {'0', '1','2','3','4','5','6','7','8','9'};
     printf("%s\n", tree->cod);
     tempoI = clock();
     srand(time(NULL));
     for(int i = 0; i < 30; i ++){
         char codigo[7];
-        codigo[0] = nums[rand()%6];
-        codigo[1] = nums[rand()%6];
-        codigo[2] = nums[rand()%6];
-        codigo[3] = nums[rand()%6];
-        codigo[4] = nums[rand()%6];
-        codigo[5] = nums[rand()%6];
+        codigo[0] = nums[rand()%10];
+        codigo[1] = nums[rand()%10];
+        codigo[2] = nums[rand()%10];
+        codigo[3] = nums[rand()%10];
+        codigo[4] = nums[rand()%10];
+        codigo[5] = nums[rand()%10];
         codigo[6] = '\0';
         printf("codigo: %s\n--> ", codigo);
         ArvLLRB **sn = buscaTestes(&tree,codigo, 0);
