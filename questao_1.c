@@ -452,7 +452,7 @@ int main()
     printf("time: %.2lf ms\n", tf);
     //-----------------------------------------------------------------------//
 
-    //-------------------------------------------  Usuario -------------------------------------------//
+    //-------------------------------------------  USUARIO  -------------------------------------------//
     // do{
     //     printf("BEM-VINDO A SUA LOJA DE CALCADOS\n");
     //     printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
