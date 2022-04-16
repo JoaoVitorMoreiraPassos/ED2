@@ -230,12 +230,13 @@ Arv23 * criaArv23()
     float sobepreco;
     char sobecod[7],sobetipo[20],sobemarca[20];
 
-    int pos = 1, sobepos = 1;
+    int pos = 1, sobepos;
     while(fscanf(arq, " %s %s %s %d %d %f", cod, tipo, marca, &tamanho, &quantidade, &preco)!= EOF)
     {
-        inserirArv23(pai,&tree, cod, tipo, marca, tamanho, quantidade, preco, pos, sobecod, sobetipo, sobemarca, &sobetamanho, &sobequantidade, &sobepreco, &pos);
+        inserirArv23(pai,&tree, cod, tipo, marca, tamanho, quantidade, preco, pos, sobecod, sobetipo, sobemarca, &sobetamanho, &sobequantidade, &sobepreco, &sobepos);
         pos ++;
     }
+    fclose(arq);
     return tree;
 }
 
@@ -268,8 +269,8 @@ Arv23 **buscaCalcado(Arv23 **tree, char *codigo)
     Arv23 **NO;
     NO = NULL;
     if(*tree != NULL)
-    {
-        if(strcmp(codigo, (*tree)->cod) == 0)
+    {  
+        if(strcmp(codigo, (*tree)->cod) == 0  || strcmp(codigo,(*tree)->cod2) == 0)
         {
             NO = tree;
         }
@@ -348,7 +349,6 @@ void insereCalcado(Arv23 **tree, char *codigo, int quantidade)
             (*aux)->quantidade2 += quantidade;
             printf("Nova quantidade: %d\n", (*aux)->quantidade2);
         }
-        gravaArv23(*tree);
     }
     else
         printf("Produto não registrado!\n");
@@ -371,7 +371,7 @@ void vendeCalcado(Arv23 **tree, char *codigo, int quantidade)
             if((*aux)->quantidade2 < 0) (*aux)->quantidade2  = 0;
             printf("Nova quantidade: %d\n", (*aux)->quantidade2);
         }
-        gravaArv23(*tree);
+        
     }
     else
         printf("Produto não registrado!\n");
@@ -383,22 +383,24 @@ void mostra(Arv23 *tree)
     if(tree != NULL)
     {
         mostra(tree->esq);
-        printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", tree->cod,
-                                                               tree->tipo,
-                                                               tree->marca,
-                                                               tree->tamanho,
-                                                               tree->quantidade,
-                                                               tree->preco);
+        printf("%5d | %10s | %10s | %10s | %10d | %10d | R$%5.2f\n", tree->pos,
+                                                                     tree->cod,
+                                                                     tree->tipo,
+                                                                     tree->marca,
+                                                                     tree->tamanho,
+                                                                     tree->quantidade,
+                                                                     tree->preco);
         printf("-----------------------------------------------------------------------------------\n");
         mostra(tree->cen);
         if(tree->NInfos == 2)
         {
-            printf("%10s | %10s | %10s | %10d | %10d | R$%5.2f\n", tree->cod2,
-                                                                   tree->tipo2,
-                                                                   tree->marca2,
-                                                                   tree->tamanho2,
-                                                                   tree->quantidade2,
-                                                                   tree->preco2);
+            printf("%5d | %10s | %10s | %10s | %10d | %10d | R$%5.2f\n", tree->pos2,
+                                                                         tree->cod2,
+                                                                         tree->tipo2,
+                                                                         tree->marca2,
+                                                                         tree->tamanho2,
+                                                                         tree->quantidade2,
+                                                                         tree->preco2);
             printf("-----------------------------------------------------------------------------------\n");
 
         }
@@ -410,12 +412,13 @@ void tabela(Arv23 *tree)
     if(tree != NULL)
     {
         printf("-----------------------------------------------------------------------------------\n");
-        printf("%10s | %10s | %10s | %10s | %8s | %5s\n", "Codigo",
-                                                          "Tipo",
-                                                          "Marca",
-                                                          "Tamanho",
-                                                          "Quantidade",
-                                                          "Preço");
+        printf("%5s | %10s | %10s | %10s | %10s | %8s | %5s\n", "Linha",
+                                                                "Codigo",
+                                                                "Tipo",
+                                                                "Marca",
+                                                                "Tamanho",
+                                                                "Quantidade",
+                                                                "Preço");
         printf("-----------------------------------------------------------------------------------\n");
         mostra(tree);
         printf("\n");
@@ -452,10 +455,10 @@ int main()
     printf("time: %.2lf ms\n", tf);
     //-----------------------------------------------------------------------//
 
-    //-------------------------------------------  USUARIO  -------------------------------------------//
+    //-------------------------------------------  Usuario -------------------------------------------//
     // do{
     //     printf("BEM-VINDO A SUA LOJA DE CALCADOS\n");
-    //     printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
+    //     printf("-->%3sInserir calcado[1]\n-->%3sVender calcado[2]\n-->%3sPesquisar Calcado[3]\n-->%3sCheca estoque[4]\n-->%3sSalva e Sair[5]\n-->%3sO que desja fazer: ", " "," "," "," "," ", " ");
     //     scanf("%d", &escolha);
     //     char codigo[7];
     //     int quantidade;
@@ -521,6 +524,7 @@ int main()
     //             tabela(tree);
     //             break;
     //         default:
+    //             gravaArv23(tree);
     //             break;
     //     }
     // }while(escolha != 5);
